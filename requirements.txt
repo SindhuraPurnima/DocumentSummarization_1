@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+pika
+elasticsearch
+pyspark
+python-docx
+pymupdf
+
