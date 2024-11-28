@@ -3,9 +3,9 @@ from ..utils.file_utils import extract_text_from_pdf, extract_text_from_word
 from ..utils.es_utils import index_document
 import io
 
-router = APIRouter()
+uploadrouter = APIRouter()
 
-@router.post("/")
+@uploadrouter.post("/")
 async def upload_document(file: UploadFile = File(...)):
     if not file:
         raise HTTPException(status_code=400, detail="No file received")

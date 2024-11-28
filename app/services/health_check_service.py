@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 from ..utils.es_utils import check_es_health
 
-router = APIRouter()
+healthrouter = APIRouter()
 
-@router.get("/")
+@healthrouter.get("/")
 def health_check():
     if check_es_health():
         return {"status": "success", "message": "Elasticsearch is running"}
