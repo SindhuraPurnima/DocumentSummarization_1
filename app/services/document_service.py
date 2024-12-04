@@ -1,6 +1,7 @@
 from fastapi import APIRouter, File, UploadFile, HTTPException
 from ..utils.file_utils import extract_text_from_pdf, extract_text_from_word
 from ..utils.es_utils import index_document
+from ..utils.rabbitmq_utils import send_to_queue
 import io
 
 uploadrouter = APIRouter()
@@ -37,6 +38,11 @@ async def upload_document(file: UploadFile = File(...)):
 
         # Store document in Elasticsearch
         response = index_document(doc)
+        doc_id = response["_id"]
+
+        # Publish document ID to RabbitMQ
+        send_to_queue("document_queue", doc_id)
+
         return {"message": "Document uploaded successfully!", "es_response": response}
 
     except Exception as e:
