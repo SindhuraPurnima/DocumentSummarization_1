@@ -16,12 +16,19 @@ def index_document(doc: dict):
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-def check_es_health() -> bool:
+    
+def fetch_document_from_elasticsearch(doc_id: str):
     """
-    Check the health of the Elasticsearch cluster.
+    Fetches a document from Elasticsearch using its ID.
     """
     try:
-        return es.ping()
-    except Exception:
-        return False
+        response = es.get(index="documents", id=doc_id)
+        if response["found"]:
+            return response["_source"]  # Document content
+        else:
+            print(f"Document with ID {doc_id} not found in Elasticsearch.")
+            return None
+    except Exception as e:
+        print(f"Error fetching document from Elasticsearch: {str(e)}")
+        return None
+
