@@ -24,13 +24,13 @@ def summarize_chunks(document_id, document_text, chunk_size=500, max_length=150)
     for idx, chunk in enumerate(chunks):
         print(f"[DEBUG] Summarizing chunk {idx + 1}/{len(chunks)}...")
         try:
-            summarized_chunk = summarizer(chunk, truncation=True, max_length=max_length)[0]['summary_text']
+            summarized_chunk = summarizer(chunk, max_length=max_length)[0]['summary_text']
             summaries.append(summarized_chunk)
-            print(f"[DEBUG] Chunk {idx + 1} Summary: {summarized_chunk}")
+           # print(f"[DEBUG] Chunk {idx + 1} Summary: {summarized_chunk}")
         except Exception as e:
             print(f"[!] Error during summarization for chunk {idx + 1}: {e}")
     
     # Combine all chunk summaries into a final summary
     final_summary = " ".join(summaries)
-    print(f"[DEBUG] Final Summary for document ID {document_id}: {final_summary}")
+   # print(f"[DEBUG] Final Summary for document ID {document_id}: {final_summary}")
     return final_summary

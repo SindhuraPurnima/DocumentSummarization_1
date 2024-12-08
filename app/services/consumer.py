@@ -1,6 +1,6 @@
 import pika
 from ..utils.es_utils import fetch_document_from_elasticsearch
-from chunking import summarize_chunks
+from app.services.chunking import summarize_chunks
 
 
 def process_document(ch, method, properties, body):
@@ -11,7 +11,7 @@ def process_document(ch, method, properties, body):
         # Fetch document content from Elasticsearch
         document = fetch_document_from_elasticsearch(document_id)
         document_text = document.get("content", "")
-        print(f"[DEBUG] Document content for ID {document_id}: {document_text}")
+       # print(f"[DEBUG] Document content for ID {document_id}: {document_text}")
 
          # Perform summarization with chunking
         summarized_text = summarize_chunks(document_id, document_text)
