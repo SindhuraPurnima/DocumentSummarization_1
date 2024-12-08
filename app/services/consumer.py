@@ -1,9 +1,7 @@
 import pika
-from transformers import pipeline
 from ..utils.es_utils import fetch_document_from_elasticsearch
+from chunking import summarize_chunks
 
-# Initialize the summarization model
-summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
 def process_document(ch, method, properties, body):
     document_id = body.decode()
@@ -13,19 +11,12 @@ def process_document(ch, method, properties, body):
         # Fetch document content from Elasticsearch
         document = fetch_document_from_elasticsearch(document_id)
         document_text = document.get("content", "")
+        print(f"[DEBUG] Document content for ID {document_id}: {document_text}")
 
-        # Perform summarization
-        if document_text:
-            print(" [x] Performing summarization...")
-            summary = summarizer(document_text, max_length=150, min_length=30, do_sample=False)
-            summarized_text = summary[0]["summary_text"]
+         # Perform summarization with chunking
+        summarized_text = summarize_chunks(document_id, document_text)
+        print(f" [x] Summary for document {document_id}: {summarized_text}")
 
-            print(f" [x] Summary for document {document_id}: {summarized_text}")
-
-            # Save or log the summarized text (can be stored back in Elasticsearch or printed)
-            # For now, we just print the summary
-        else:
-            print(f" [x] Document content is empty for ID: {document_id}")
 
     except Exception as e:
         print(f" [x] Error processing document with ID {document_id}: {str(e)}")
